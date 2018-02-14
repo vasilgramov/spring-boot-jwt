@@ -1,6 +1,8 @@
 package com.jwt_auth.services;
 
 import com.jwt_auth.entities.User;
+import com.jwt_auth.exceptions.userExceptions.InvalidRegisterException;
+import com.jwt_auth.exceptions.userExceptions.UserAlreadyExistsException;
 import com.jwt_auth.models.binding_models.RegisterUser;
 import com.jwt_auth.models.view_models.ViewUser;
 import com.jwt_auth.repositories.UserRepository;
@@ -35,8 +37,22 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void register(RegisterUser registerUser) {
+    public void register(RegisterUser registerUser) throws InvalidRegisterException, UserAlreadyExistsException {
         User user = new User();
+
+        if (!registerUser.getPassword().equals(registerUser.getRepeatPassword())) {
+            throw new InvalidRegisterException("Passwords do not match!");
+        }
+
+        if (this.userRepository.findByUsername(registerUser.getUsername()) != null)  {
+            throw new UserAlreadyExistsException("Email already exists!");
+        }
+
+        /*
+          add validating password logic:
+                more that 6 characters; less that 100 characters
+                containing special symbols
+         */
 
         user.setUsername(registerUser.getUsername());
         user.setPassword(this.passwordEncoder.encode(registerUser.getPassword()));

@@ -1,6 +1,8 @@
 package com.jwt_auth.controllers;
 
+import com.jwt_auth.exceptions.userExceptions.UserException;
 import com.jwt_auth.models.binding_models.RegisterUser;
+import com.jwt_auth.models.view_models.Message;
 import com.jwt_auth.models.view_models.ViewUser;
 import com.jwt_auth.security.JwtTokenUtil;
 import com.jwt_auth.services.UserService;
@@ -32,8 +34,8 @@ public class UserController {
     public ResponseEntity<?> register(@RequestBody RegisterUser registerUser) {
         try {
             this.userService.register(registerUser);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        } catch (UserException e) {
+            return new ResponseEntity<>(new Message(e.getMessage()), HttpStatus.BAD_REQUEST);
         }
 
         return new ResponseEntity<>(HttpStatus.OK);

@@ -9,6 +9,9 @@ public class LoginUser {
         super();
     }
 
+    public LoginUser(String user, String password) {
+    }
+
     public String getUsername() {
         return this.username;
     }
